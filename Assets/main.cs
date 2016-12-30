@@ -6,241 +6,34 @@ using System.Linq;
 
 public class main : MonoBehaviour
 {
-
-    class Bloc
-    {
-
-        int x;
-        int y;
-        int largeur;
-        int hauteur;
-
-        public int X
-        {
-            get { return x; }
-            set { x = value; }
-        }
-
-        public int Y
-        {
-            get { return y; }
-            set { y = value; }
-        }
-
-        public int Largeur
-        {
-            get { return largeur; }
-            set { largeur = value; }
-        }
-
-        public int Hauteur
-        {
-            get { return hauteur; }
-            set { hauteur = value; }
-        }
-
-        public Bloc(int x, int y, int largeur, int hauteur)
-        {
-            this.x = x;
-            this.y = y;
-            this.largeur = largeur;
-            this.hauteur = hauteur;
-        }
-    }
-
-    class Point
-    {
-        int x;
-        int y;
-
-        public int X
-        {
-            get { return x; }
-            set { x = value; }
-        }
-
-        public int Y
-        {
-            get { return y; }
-            set { y = value; }
-        }
-
-        public Point()
-        {
-            this.x = 0;
-            this.y = 0;
-        }
-
-        public Point(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    class Program
-    {
-        public static List<Bloc> blocavenir = new List<Bloc>();
-        public static List<Bloc> blocplace = new List<Bloc>();
-        public static int max_container;
-        public static List<Point> pointpotentiel = new List<Point>();
-
-        public static bool test(Point p, Bloc p_objetavenir, List<Bloc> p_listobjetplace)
-        {
-            foreach (Bloc b in p_listobjetplace)
-            {
-                if ((((((b.X + b.Largeur > p.X) && (b.X + b.Largeur < p.X + p_objetavenir.Largeur))
-                     || ((b.X >= p.X) && (b.X < p.X + p_objetavenir.Largeur))
-                     || ((b.X < p.X) && (b.X + b.Largeur >= p.X + p_objetavenir.Largeur)))
-                     )
-                     && (((b.Y < p.Y + p_objetavenir.Hauteur) && (b.Y >= p.Y))
-                     || ((b.Y + b.Hauteur > p.Y) && (b.Y + b.Hauteur <= p.Y + p_objetavenir.Hauteur))
-                     || ((b.Y <= p.Y) && (b.Y + b.Hauteur >= p.Y + p_objetavenir.Hauteur)))) || (p.X + p_objetavenir.Largeur > max_container))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static Bloc Meilleurposition(List<Point> p_listepointpotentiel, Bloc p_blocavenir, List<Bloc> p_listeobjetplace)
-        {
-            if (p_listepointpotentiel.Count != 0)
-            {
-                int min = p_listepointpotentiel[0].Y;
-                Point meilleurpoint = p_listepointpotentiel[0];
-
-                foreach (Point p in p_listepointpotentiel)
-                {
-                    if (p.Y < min)
-                    {
-                        min = p.Y;
-                        meilleurpoint = p;
-                    }
-                    else if (p.Y == min)
-                    {
-                        if (p.X < meilleurpoint.X)
-                        {
-                            min = p.Y;
-                            meilleurpoint = p;
-                        }
-                    }
-                }
-
-
-                p_blocavenir.X = meilleurpoint.X;
-                p_blocavenir.Y = meilleurpoint.Y;
-            }
-            else
-            {
-                //
-            }
-            return p_blocavenir;
-        }
-
-        public static List<Bloc> TriBloc(List<Bloc> p_listeobjetavenir)
-        {
-            List<Bloc> retour = p_listeobjetavenir.OrderByDescending(b => b.Hauteur).ToList();
-            return retour;
-        }
-
-        public static List<Bloc> Binpacking(List<Bloc> blocavenir, List<Bloc> blocplace)
-        {
-            List<Bloc> listeblocretour = new List<Bloc>();
-
-            //Console.Write("Press any key to continue . . . ");
-            //Console.ReadKey(true);
-
-            if (blocplace.Count != 0)
-            {
-
-                foreach (Bloc b in blocplace)
-                {
-
-                    Point p_bas = new Point(b.X + b.Largeur, b.Y);
-                    bool retour = test(p_bas, blocavenir[0], blocplace);
-
-                    if (retour == true)
-                    {
-                        pointpotentiel.Add(p_bas);
-                    }
-                    //Console.Write(retour);
-                    Point p_haut = new Point(b.X, b.Y + b.Hauteur);
-                    retour = test(p_haut, blocavenir[0], blocplace);
-                    //Console.Write(retour);
-                    if (retour == true)
-                    {
-                        pointpotentiel.Add(p_haut);
-                    }
-                }
-
-                blocplace.Add(Meilleurposition(pointpotentiel, blocavenir[0], blocplace));
-                blocavenir.Remove(blocavenir[0]);
-
-                pointpotentiel.Clear();
-                if (blocavenir.Count != 0)
-                {
-                    blocplace = Binpacking(blocavenir, blocplace);
-                }
-            }
-            else
-            {
-                Bloc o = new Bloc(0, 0, blocavenir[0].Largeur, blocavenir[0].Hauteur);
-                blocplace.Add(o);
-                blocavenir.Remove(o);
-
-                blocplace = Binpacking(blocavenir, blocplace);
-
-            }
-
-            return blocplace;
-        }
-
-
-        /* public static void Main(string[] args)
-         {
-
-
-             // TODO: Implement Functionality Here
-
-             max_container = 50;
-
-             for (int i = 1; i < 15; i++)
-             {
-                 Program.blocavenir.Add(new Bloc(0, 0, i, i));
-             }
-
-             Program.blocavenir = TriBloc(Program.blocavenir);
-
-             foreach(Bloc b in blocavenir){
-                 Console.WriteLine(b.X + " - " + b.Y + " - " + b.Largeur + " - " + b.Hauteur);
-             }
-
-             blocplace = Program.Binpacking(Program.blocavenir, Program.blocplace);
-
-         }*/
-    }
     void Start()
     {
+		const int BlocNb = 15, maxSize = 20, minSize = 5;
+		List<Bloc> blocsToPlace = new List<Bloc>();
+		int width, height;
         Debug.Log("start");
+		System.Random rand = new System.Random();
 
-        Program.max_container = 50;
+        //Program.max_container = 50;
         int compteur = 0;
-        for (int i = 1; i < 15; i++)
+		for (int i = 1; i < BlocNb; i++)
         {
-            Program.blocavenir.Add(new Bloc(0, 0, i, i));
+			width = rand.Next (minSize, maxSize);
+			height = rand.Next (minSize, maxSize);
+			blocsToPlace.Add(new Bloc(0, 0, width, height));
         }
 
-        Program.blocavenir = Program.TriBloc(Program.blocavenir);
+		Container container = new Container ();
+		PositionHelper.TriBloc (blocsToPlace);
+		foreach (Bloc bl in blocsToPlace) {
+			container.AddBloc (bl);
+		}
 
-        /*foreach (Bloc b in Program.blocavenir)
-         {
-             Debug.Log(b.X + " - " + b.Y + " - " + b.Largeur + " - " + b.Hauteur);
-         }
-         */
-        Program.blocplace = Program.Binpacking(Program.blocavenir, Program.blocplace);
+        //Program.blocavenir = Program.TriBloc(Program.blocavenir);
 
-        foreach (Bloc b in Program.blocplace)
+        //Program.blocplace = Program.Binpacking(Program.blocavenir, Program.blocplace);
+
+		foreach (Bloc b in blocsToPlace)
         {
   
             Texture newTexture = new Texture();
