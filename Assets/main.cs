@@ -8,9 +8,9 @@ public class main : MonoBehaviour
 {
     void Start()
     {
-		const int BlocNb = 15, maxSize = 20, minSize = 5;
+		const int BlocNb = 50, maxSize = 20, minSize = 5;
 		List<Bloc> blocsToPlace = new List<Bloc>();
-		int width, height;
+		int width, height, depth;
         Debug.Log("start");
 		System.Random rand = new System.Random();
 
@@ -20,7 +20,11 @@ public class main : MonoBehaviour
         {
 			width = rand.Next (minSize, maxSize);
 			height = rand.Next (minSize, maxSize);
-			blocsToPlace.Add(new Bloc(0, 0, width, height));
+            //EN 3D :   décommenter la ligne pour avoir le résultat en 2d ou en 3d
+            //depth = rand.Next(minSize, maxSize);
+            //EN 2D :
+            depth = 0;    
+			blocsToPlace.Add(new Bloc(width, height, depth));
         }
 
 		Container container = new Container ();
@@ -33,15 +37,15 @@ public class main : MonoBehaviour
 
         //Program.blocplace = Program.Binpacking(Program.blocavenir, Program.blocplace);
 
-		foreach (Bloc b in blocsToPlace)
+        foreach (Bloc b in blocsToPlace)
         {
-  
+
             Texture newTexture = new Texture();
             compteur++;
-            Debug.Log(b.X + " - " + b.Y + " - " + b.Largeur + " - " + b.Hauteur);
+            Debug.Log(b.X + " - " + b.Y + " - " + b.Z + " - " + b.Largeur + " - " + b.Hauteur + " - " + b.Profondeur);
             GameObject nouveaucube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            nouveaucube.transform.position = transform.TransformVector(new Vector3(b.X, b.Y, 0));
-            nouveaucube.transform.localScale = new Vector3(b.Largeur, b.Hauteur, 0);
+            nouveaucube.transform.position = transform.TransformVector(new Vector3(b.X, b.Y, /*0*/ b.Z));
+            nouveaucube.transform.localScale = new Vector3(b.Largeur, b.Hauteur, /*0*/ b.Profondeur);
             nouveaucube.name = "Objet " + compteur;
             Color newColor = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 1.0f);
             Shader shader1 = Shader.Find("Sprites/Default");
@@ -64,30 +68,12 @@ public class main : MonoBehaviour
 
         }
 
-        /*
-           foreach (Bloc b in Program.blocavenir)
-           {
-               Debug.Log("b.X " + b.X + " b.Y " + b.Y);
-
-               /*Debug.Log("placed a cube");
-               newcube.transform.position = transform.TransformVector(new Vector3(b.X, b.Y, 0));
-               newcube.transform.localScale = new Vector3(b.Largeur, b.Hauteur, 0);
-               Instantiate(newcube);
-           }*/
-
-
 
     }
     // Update is called once per frame
     void Update()
     {
 
-        //Instantiate(newcube, origine.position, origine.rotation);
-        /*if (Input.GetButtonDown("Fire1"))
-        {
-            Rigidbody instance;
-            instance = Instantiate(newcube, origine.position, origine.rotation) as Rigidbody;
-        }*/
     }
 }
 
