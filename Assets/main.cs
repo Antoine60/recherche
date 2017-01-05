@@ -21,9 +21,9 @@ public class main : MonoBehaviour
 			width = rand.Next (minSize, maxSize);
 			height = rand.Next (minSize, maxSize);
             //EN 3D :   décommenter la ligne pour avoir le résultat en 2d ou en 3d
-            //depth = rand.Next(minSize, maxSize);
+            depth = rand.Next(minSize, maxSize);
             //EN 2D :
-            depth = 0;    
+            //depth = 0;    
 			blocsToPlace.Add(new Bloc(width, height, depth));
         }
 
