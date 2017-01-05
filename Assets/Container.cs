@@ -4,38 +4,45 @@ using System.Collections.Generic;
 public class Container
 {
     List<Bloc> m_blocs = new List<Bloc>();
-    const int m_width = 50;
-    const int m_depth = 50;
+    const int m_width = 100;
+    const int m_depth = 100;
+    int m_height=0;
+    int m_decalage;
 
-    public Container()
+    public Container(int height=0, int decalage=0)
     {
+        m_height = height;
+        m_decalage = decalage;
     }
 
-    public void AddBloc(Bloc bloc)
+    public bool AddBloc(Bloc bloc, bool heigth=false)
     {
         List<Point> potentialPoints = new List<Point>();
         if (m_blocs.Count == 0)
         {
             bloc.setPosition(0, 0, 0);
             m_blocs.Add(bloc);
-            return;
+            return true;
         }
         foreach (Bloc bl in m_blocs)
         {
             //Si plaçable sur le coin en bas à droite
-            if (isPlacable(bl.getBottomRightPoint(), bloc))
+            if (isPlacable(bl.getBottomRightPoint(), bloc, heigth))
                 potentialPoints.Add(bl.getBottomRightPoint());
             //si plaçable sur le coin en haut à droite
-            if (isPlacable(bl.getUpperLeftPoint(), bloc))
+            if (isPlacable(bl.getUpperLeftPoint(), bloc, heigth))
                 potentialPoints.Add(bl.getUpperLeftPoint());
             //si placable sur le point en bas, au fond à gauche
             if (isPlacable(bl.getBackLeftPoint(), bloc))
                 potentialPoints.Add(bl.getBackLeftPoint());
         }
+        if (potentialPoints.Count == 0)
+            return false;
         m_blocs.Add(PositionHelper.Meilleurposition(potentialPoints, bloc, m_blocs));
+        return true;
     }
 
-    public bool isPlacable(Point p, Bloc bloc)
+    public bool isPlacable(Point p, Bloc bloc, bool height=false)
     {
         foreach (Bloc b in m_blocs)
         {
@@ -49,7 +56,8 @@ public class Container
                         || ((p.Z + bloc.Profondeur > b.Z) && (p.Z + bloc.Profondeur <= b.Z + b.Profondeur))
                         || ((p.Z <= b.Z) && (p.Z + bloc.Profondeur >= b.Z + b.Profondeur))))
                 || (p.X + bloc.Largeur > m_width)
-                || (p.Z + bloc.Profondeur > m_depth))
+                || (p.Z + bloc.Profondeur > m_depth)
+                || ((p.Y + bloc.Hauteur > m_height) && (height==true)))
             {
                 return false;
             }
