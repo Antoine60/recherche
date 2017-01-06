@@ -1,13 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 public class main : MonoBehaviour
 {
+    public Button StartText;
+    public Button ExitText;
+    public Canvas StartMenu;
+    public Button RetourText;
+    public Canvas PremierLevel;
+   
+
     public static List<Bloc> solution2d()
     {
         const int BlocNb = 100, maxSize = 40, minSize = 1;
@@ -28,7 +37,7 @@ public class main : MonoBehaviour
         }
 
         Container container = new Container();
-        PositionHelper.TriBloc(blocsToPlace);
+        blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
         foreach (Bloc bl in blocsToPlace)
         {
             container.AddBloc(bl);
@@ -38,7 +47,7 @@ public class main : MonoBehaviour
 
     public static List<Bloc> solution3d()
     {
-        const int BlocNb = 500, maxSize = 40, minSize = 1;
+        const int BlocNb = 1000;
         List<Bloc> blocsToPlace = new List<Bloc>();
         int width, height, depth;
         Debug.Log("start");
@@ -55,7 +64,7 @@ public class main : MonoBehaviour
         }
 
         Container container = new Container();
-        PositionHelper.TriBloc(blocsToPlace);
+        blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
         foreach (Bloc bl in blocsToPlace)
         {
             container.AddBloc(bl);
@@ -65,7 +74,7 @@ public class main : MonoBehaviour
 
     public static List<Bloc> solution3dRandom()
     {
-        const int BlocNb = 100, maxSize = 40, minSize = 1;
+        const int BlocNb = 500, maxSize = 40, minSize = 1;
         List<Bloc> blocsToPlace = new List<Bloc>();
         int width, height, depth;
         Debug.Log("start");
@@ -84,7 +93,7 @@ public class main : MonoBehaviour
         }
 
         Container container = new Container();
-        //PositionHelper.TriBloc(blocsToPlace);
+        blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
         foreach (Bloc bl in blocsToPlace)
         {
             container.AddBloc(bl);
@@ -116,7 +125,7 @@ public class main : MonoBehaviour
         while (cpt < BlocNb)
         {
             Container container = new Container(100, decalage);
-            //PositionHelper.TriBloc(blocsToPlace);
+            blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
             bool flag = true;
             while (flag)
             {
@@ -135,49 +144,83 @@ public class main : MonoBehaviour
         return blocsToPlace;
     }
 
-    void Start()
+    private IEnumerator coroutine;
+    private object blocavenir;
+
+    private IEnumerator WaitAndPrint(float waitTime)
     {
-        //affichage 4 blocs de choix de solution à exec
+        int cpt = 0;
 
+        List<Bloc> blocsToPlace = solution2d();
+        int total = blocsToPlace.Count();
 
-
-        //List<Bloc> blocsToPlace = solution2d();
-        List<Bloc> blocsToPlace = solution3dMultipleContainers();
-
-        int compteur = 0;
-
-        foreach (Bloc b in blocsToPlace)
+        while (cpt < total)
         {
 
-            Texture newTexture = new Texture();
-            compteur++;
-            Debug.Log(b.X + " - " + b.Y + " - " + b.Z + " - " + b.Largeur + " - " + b.Hauteur + " - " + b.Profondeur);
+            Bloc b = blocsToPlace[cpt];
+
+            Canvas PremierLevel = GameObject.Find("PremierLevel").GetComponent<Canvas>();
             GameObject nouveaucube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            //nouveaucube.transform.position = transform.TransformVector(new Vector3(b.X, b.Y, /*0*/ b.Z));
+            
             float fx = b.X + (float)b.Largeur / 2;
             float fy = b.Y + (float)b.Hauteur / 2;
             float fz = b.Z + (float)b.Profondeur / 2;
-
             float fl = b.Largeur;
             float fh = b.Hauteur;
             float fp = b.Profondeur;
-            Debug.Log(" fx : " + fx + " fy : " + " fz : " + fz);
             nouveaucube.transform.position = new Vector3(fx, fy, fz);
-            nouveaucube.transform.localScale = new Vector3(fl, fh, /*0*/ fp);
-            nouveaucube.name = "Objet " + compteur;
+            nouveaucube.transform.localScale = new Vector3(fl, fh, fp);
+            nouveaucube.transform.parent = PremierLevel.transform;
+
             Color newColor = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 1.0f);
             Shader shader1 = Shader.Find("Sprites/Default");
             nouveaucube.GetComponent<Renderer>().material.shader = shader1;
             nouveaucube.GetComponent<Renderer>().material.color = newColor;
-            AssetDatabase.Refresh();
-        
+            //Rigidbody gameObjectsRigidBody = nouveaucube.AddComponent<Rigidbody>(); // Add the rigidbody.
+            //gameObjectsRigidBody.mass = 9.81f; // Set the GO's mass to 5 via the Rigidbody.
+
+            cpt++;
+
+            yield return new WaitForSeconds(waitTime);
+
+
         }
 
-
     }
-    // Update is called once per frame
-    void Update()
+    public void previous()
     {
+        //Canvas PremierLevel = GameObject.Find("PremierLevel").GetComponent<Canvas>();
 
+        PremierLevel.enabled = false;
+        foreach (Transform child in PremierLevel.transform)
+        {
+            if (child.name != "Retour")
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+        StartMenu.enabled = true;
+       
+    }
+    void Start()
+    {
+        PremierLevel = GameObject.Find("PremierLevel").GetComponent<Canvas>();
+    
+        PremierLevel.enabled = false;
+
+        ExitText = ExitText.GetComponent<Button>();
+        StartText = StartText.GetComponent<Button>();
+    }
+    public void StartLevel()
+    {
+        print("Starting " + Time.time);
+        StartMenu.enabled = false;
+        PremierLevel.enabled = true;
+        coroutine = WaitAndPrint(0.05f);
+        StartCoroutine(coroutine);
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
