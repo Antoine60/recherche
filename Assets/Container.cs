@@ -4,12 +4,12 @@ using System.Collections.Generic;
 public class Container
 {
     List<Bloc> m_blocs = new List<Bloc>();
-    const int m_width = 100;
-    const int m_depth = 100;
-    int m_height=0;
+    int m_width;
+    int m_depth;
+    int m_height;
     int m_decalage;
 
-    public Container(int height=0, int decalage=0)
+    public Container(int width=50, int m_depth=50, int height=0, int decalage=0)
     {
         m_height = height;
         m_decalage = decalage;
@@ -33,7 +33,7 @@ public class Container
             if (isPlacable(bl.getUpperLeftPoint(), bloc, heigth))
                 potentialPoints.Add(bl.getUpperLeftPoint());
             //si placable sur le point en bas, au fond à gauche
-            if (isPlacable(bl.getBackLeftPoint(), bloc))
+            if (isPlacable(bl.getBackLeftPoint(), bloc, heigth))
                 potentialPoints.Add(bl.getBackLeftPoint());
         }
         if (potentialPoints.Count == 0)
@@ -57,7 +57,7 @@ public class Container
                         || ((p.Z <= b.Z) && (p.Z + bloc.Profondeur >= b.Z + b.Profondeur))))
                 || (p.X + bloc.Largeur > m_width)
                 || (p.Z + bloc.Profondeur > m_depth)
-                || ((p.Y + bloc.Hauteur > m_height) && (height==true)))
+                || (height == true && p.Y + bloc.Hauteur > m_height))
             {
                 return false;
             }
