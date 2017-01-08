@@ -13,9 +13,9 @@ public class main : MonoBehaviour
     public Button StartText;
     public Button ExitText;
     public Canvas StartMenu;
-    public Button RetourText;
     public Canvas PremierLevel;
-   
+    public Canvas Previous; 
+
 
     public static List<Bloc> solution2d()
     {
@@ -47,7 +47,7 @@ public class main : MonoBehaviour
 
     public static List<Bloc> solution3d()
     {
-        const int BlocNb = 1000;
+        const int BlocNb = 50;
         List<Bloc> blocsToPlace = new List<Bloc>();
         int width, height, depth;
         Debug.Log("start");
@@ -74,7 +74,7 @@ public class main : MonoBehaviour
 
     public static List<Bloc> solution3dRandom()
     {
-        const int BlocNb = 500, maxSize = 40, minSize = 1;
+        const int BlocNb = 50, maxSize = 40, minSize = 1;
         List<Bloc> blocsToPlace = new List<Bloc>();
         int width, height, depth;
         Debug.Log("start");
@@ -104,7 +104,7 @@ public class main : MonoBehaviour
     public static List<Bloc> solution3dMultipleContainers()
     {
         int cpt = 0; int decalage = 0;
-        const int BlocNb = 100, maxSize = 40, minSize = 1;
+        const int BlocNb = 50, maxSize = 40, minSize = 1;
         List<Bloc> blocsToPlace = new List<Bloc>();
         int width, height, depth;
         Debug.Log("start");
@@ -147,11 +147,10 @@ public class main : MonoBehaviour
     private IEnumerator coroutine;
     private object blocavenir;
 
-    private IEnumerator WaitAndPrint(float waitTime)
+    private IEnumerator exec_demo(float waitTime, List<Bloc> blocsToPlace)
     {
         int cpt = 0;
 
-        List<Bloc> blocsToPlace = solution2d();
         int total = blocsToPlace.Count();
 
         while (cpt < total)
@@ -185,40 +184,68 @@ public class main : MonoBehaviour
 
 
         }
+        Previous.enabled = true;
+
 
     }
     public void previous()
     {
-        //Canvas PremierLevel = GameObject.Find("PremierLevel").GetComponent<Canvas>();
 
+        Vector3 vector = new Vector3(0, 0, -200);
+        Camera.main.transform.position = vector;
+        Camera.main.transform.rotation = Quaternion.Euler(0, 0, 0);
         PremierLevel.enabled = false;
         foreach (Transform child in PremierLevel.transform)
         {
-            if (child.name != "Retour")
-            {
-                GameObject.Destroy(child.gameObject);
-            }
+
+              GameObject.Destroy(child.gameObject);
+
         }
         StartMenu.enabled = true;
-       
+        Previous.enabled = false;
+
     }
     void Start()
     {
         PremierLevel = GameObject.Find("PremierLevel").GetComponent<Canvas>();
-    
+        Previous.enabled = false;
         PremierLevel.enabled = false;
 
         ExitText = ExitText.GetComponent<Button>();
         StartText = StartText.GetComponent<Button>();
     }
-    public void StartLevel()
+    public void demo1()
     {
         print("Starting " + Time.time);
         StartMenu.enabled = false;
         PremierLevel.enabled = true;
-        coroutine = WaitAndPrint(0.05f);
+        List<Bloc> blocsToPlace  = solution2d();
+        coroutine = exec_demo(0.05f, blocsToPlace);
         StartCoroutine(coroutine);
     }
+    public void demo2()
+    {
+        Vector3 vector = new Vector3(200, 100, -30);
+        Camera.main.transform.position = vector;
+        Camera.main.transform.rotation = Quaternion.Euler(0, -50, 0);
+        print("Starting " + Time.time);
+        StartMenu.enabled = false;
+        PremierLevel.enabled = true;
+        List<Bloc> blocsToPlace = solution3d();
+        coroutine = exec_demo(0.05f, blocsToPlace);
+        StartCoroutine(coroutine);
+    }
+    public void demo3()
+    {
+        print("Starting " + Time.time);
+        StartMenu.enabled = false;
+        PremierLevel.enabled = true;
+        List<Bloc> blocsToPlace = solution3dMultipleContainers();
+        coroutine = exec_demo(0.05f, blocsToPlace);
+        StartCoroutine(coroutine);
+    }
+  
+
     public void ExitGame()
     {
         Application.Quit();
