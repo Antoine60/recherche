@@ -9,7 +9,7 @@ public class Container
     int m_height;
     int m_decalage;
 
-    public Container(int width=50, int m_depth=50, int height=0, int decalage=0)
+    public Container(int width = 50, int depth = 50, int height = 0, int decalage = 0)
     {
         m_height = height;
         m_width = width;
@@ -17,7 +17,7 @@ public class Container
         m_decalage = decalage;
     }
 
-    public bool AddBloc(Bloc bloc, bool heigth=false)
+    public bool AddBloc(Bloc bloc, bool heigth = false)
     {
         List<Point> potentialPoints = new List<Point>();
         if (m_blocs.Count == 0)
@@ -44,7 +44,7 @@ public class Container
         return true;
     }
 
-    public bool isPlacable(Point p, Bloc bloc, bool height=false)
+    public bool isPlacable(Point p, Bloc bloc, bool height = false)
     {
         foreach (Bloc b in m_blocs)
         {

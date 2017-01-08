@@ -36,7 +36,7 @@ public class main : MonoBehaviour
             blocsToPlace.Add(new Bloc(20, 20, 0));
         }
 
-        Container container = new Container();
+        Container container = new Container(200, 200);
         blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
         foreach (Bloc bl in blocsToPlace)
         {
@@ -47,7 +47,7 @@ public class main : MonoBehaviour
 
     public static List<Bloc> solution3d()
     {
-        const int BlocNb = 50;
+        const int BlocNb = 200;
         List<Bloc> blocsToPlace = new List<Bloc>();
         int width, height, depth;
         Debug.Log("start");
@@ -63,7 +63,7 @@ public class main : MonoBehaviour
             blocsToPlace.Add(new Bloc(15, 15, 15));
         }
 
-        Container container = new Container();
+        Container container = new Container(100, 100);
         blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
         foreach (Bloc bl in blocsToPlace)
         {
@@ -74,7 +74,7 @@ public class main : MonoBehaviour
 
     public static List<Bloc> solution3dRandom()
     {
-        const int BlocNb = 50, maxSize = 40, minSize = 1;
+        const int BlocNb = 200, maxSize = 40, minSize = 1;
         List<Bloc> blocsToPlace = new List<Bloc>();
         int width, height, depth;
         Debug.Log("start");
@@ -92,11 +92,13 @@ public class main : MonoBehaviour
             blocsToPlace.Add(new Bloc(width, height, depth));
         }
 
-        Container container = new Container();
+        Container container = new Container(100, 100);
         blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
         foreach (Bloc bl in blocsToPlace)
         {
             container.AddBloc(bl);
+            Debug.Log(bl.X + " " + bl.Y + " " + bl.Z + " " + bl.Largeur + " " + bl.Hauteur + " " + bl.Profondeur);
+
         }
         return blocsToPlace;
     }
@@ -240,7 +242,7 @@ public class main : MonoBehaviour
         print("Starting " + Time.time);
         StartMenu.enabled = false;
         PremierLevel.enabled = true;
-        List<Bloc> blocsToPlace = solution3dMultipleContainers();
+        List<Bloc> blocsToPlace = solution3dRandom();
         coroutine = exec_demo(0.05f, blocsToPlace);
         StartCoroutine(coroutine);
     }
