@@ -106,8 +106,10 @@ public class main : MonoBehaviour
     public static List<Bloc> solution3dMultipleContainers()
     {
         int cpt = 0; int decalage = 0;
-        const int BlocNb = 50, maxSize = 40, minSize = 1;
+        const int BlocNb = 400, maxSize = 15, minSize = 1;
         List<Bloc> blocsToPlace = new List<Bloc>();
+        List<Bloc> blocsPlaced = new List<Bloc>();
+
         int width, height, depth;
         Debug.Log("start");
         System.Random rand = new System.Random();
@@ -126,17 +128,18 @@ public class main : MonoBehaviour
 
         while (cpt < BlocNb)
         {
-            Container container = new Container(100, decalage);
+            Container container = new Container(25, 25, 25, decalage);
             blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
             bool flag = true;
-            while (flag)
-            {
+            while (flag == true)
+            { 
                 flag = false;
                 foreach (Bloc bl in blocsToPlace)
                 {
-                    if (container.AddBloc(bl, true))
+                    if(!bl.Placed && container.AddBloc(bl, true))
                     {
                         flag = true;
+                        bl.Placed = true;
                         cpt++;
                     }
                 }

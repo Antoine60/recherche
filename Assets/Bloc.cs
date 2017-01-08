@@ -6,9 +6,12 @@
 		int largeur;
 		int hauteur;
         int profondeur;
+        bool placed;
 
+        
         public Bloc(int largeur, int hauteur, int profondeur = 0)
         {
+            placed = false;
             m_p.X = 0;
             m_p.Y = 0;
             m_p.Z = 0;
@@ -93,6 +96,12 @@
         {
             get { return profondeur; }
             set { profondeur = value; }
+        }
+
+        public bool Placed
+        {
+            get { return placed; }
+            set { placed = value; }
         }
 	}
 
