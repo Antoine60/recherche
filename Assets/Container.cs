@@ -12,6 +12,8 @@ public class Container
     public Container(int width=50, int m_depth=50, int height=0, int decalage=0)
     {
         m_height = height;
+        m_width = width;
+        m_depth = depth;
         m_decalage = decalage;
     }
 
