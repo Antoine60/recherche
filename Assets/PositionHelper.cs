@@ -37,6 +37,12 @@ using System.Linq;
 			List<Bloc> retour = p_listeobjetavenir.OrderByDescending(b => b.Hauteur).ToList();
 			return retour;
 		}
+
+        public static List<Bloc> TriBlocCout(List<Bloc> p_listeobjetavenir)
+        {
+            List<Bloc> retour = p_listeobjetavenir.OrderByDescending(b => b.Cout).ToList();
+            return retour;
+        }
 	}
 
 

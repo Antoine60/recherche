@@ -110,7 +110,7 @@ public class main : MonoBehaviour
         List<Bloc> blocsToPlace = new List<Bloc>();
         List<Bloc> blocPlaced = new List<Bloc>();
 
-        int width, height, depth;
+        int width, height, depth, cout;
         Debug.Log("start");
         System.Random rand = new System.Random();
 
@@ -121,9 +121,10 @@ public class main : MonoBehaviour
             height = rand.Next(minSize, maxSize);
             //EN 3D :   décommenter la ligne pour avoir le résultat en 2d ou en 3d
             depth = rand.Next(minSize, maxSize);
+            cout = rand.Next(minSize, maxSize);
             //EN 2D :s
             //depth = 0;
-            blocsToPlace.Add(new Bloc(width, height, depth));
+            blocsToPlace.Add(new Bloc(width, height, depth, cout));
         }
 
         while (cpt < BlocNb)
@@ -131,6 +132,8 @@ public class main : MonoBehaviour
             Container container = new Container(100, 100, 100, decalage);
             hoptn++;
             blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
+            blocsToPlace = PositionHelper.TriBlocCout(blocsToPlace);
+
             bool flag = true;
             while (flag == true)
             { 

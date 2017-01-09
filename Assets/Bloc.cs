@@ -7,6 +7,13 @@
 		int hauteur;
         int profondeur;
         bool placed = false;
+        int cout;
+
+        public int Cout
+        {
+            get { return cout; }
+            set { cout = value; }
+        }
 
         
         public Bloc(int largeur, int hauteur, int profondeur = 0)
@@ -17,6 +24,17 @@
             this.largeur = largeur;
             this.hauteur = hauteur;
             this.profondeur = profondeur;
+        }
+
+        public Bloc(int largeur, int hauteur, int cout=0, int profondeur = 0)
+        {
+            m_p.X = 0;
+            m_p.Y = 0;
+            m_p.Z = 0;
+            this.largeur = largeur;
+            this.hauteur = hauteur;
+            this.profondeur = profondeur;
+            this.cout = cout;
         }
 
 
