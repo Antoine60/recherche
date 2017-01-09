@@ -105,10 +105,10 @@ public class main : MonoBehaviour
 
     public static List<Bloc> solution3dMultipleContainers()
     {
-        int cpt = 0; int decalage = 0;
-        const int BlocNb = 400, maxSize = 15, minSize = 1;
+        int cpt = 0; int decalage = 0; int hoptn=-1;
+        const int BlocNb = 400, maxSize = 50, minSize = 10;
         List<Bloc> blocsToPlace = new List<Bloc>();
-        List<Bloc> blocsPlaced = new List<Bloc>();
+        List<Bloc> blocPlaced = new List<Bloc>();
 
         int width, height, depth;
         Debug.Log("start");
@@ -128,7 +128,8 @@ public class main : MonoBehaviour
 
         while (cpt < BlocNb)
         {
-            Container container = new Container(25, 25, 25, decalage);
+            Container container = new Container(100, 100, 100, decalage);
+            hoptn++;
             blocsToPlace = PositionHelper.TriBloc(blocsToPlace);
             bool flag = true;
             while (flag == true)
@@ -136,17 +137,23 @@ public class main : MonoBehaviour
                 flag = false;
                 foreach (Bloc bl in blocsToPlace)
                 {
-                    if(!bl.Placed && container.AddBloc(bl, true))
+                    if (!bl.Placed && container.AddBloc(bl, true))
                     {
+                        Bloc tmp = new Bloc(bl);
+                        tmp.X += decalage;
+                        blocPlaced.Add(tmp);
                         flag = true;
                         bl.Placed = true;
                         cpt++;
+                        Debug.Log(bl.X + " " + bl.Y + " " + bl.Z + " " + bl.Largeur + " " + bl.Hauteur + " " + bl.Profondeur);
                     }
                 }
             }
-            decalage += container.Width + 50;
+            decalage += container.Width + 100;
+            Debug.Log("Decalage : " + decalage + " cpt : " + cpt + " cntner : " + container.Blocs.Count + " blocPlaced : " + blocPlaced.Count);
+            container = null;
         }
-        return blocsToPlace;
+        return blocPlaced;
     }
 
     private IEnumerator coroutine;
@@ -245,7 +252,7 @@ public class main : MonoBehaviour
         print("Starting " + Time.time);
         StartMenu.enabled = false;
         PremierLevel.enabled = true;
-        List<Bloc> blocsToPlace = solution3dRandom();
+        List<Bloc> blocsToPlace = solution3dMultipleContainers();
         coroutine = exec_demo(0.05f, blocsToPlace);
         StartCoroutine(coroutine);
     }
